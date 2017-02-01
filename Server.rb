@@ -72,7 +72,7 @@ class Server < Roda
     response = http.request(request)
 
     json_response = JSON.parse(response.body)
-    if(json_response["status"] == 1) then
+    if(json_response["status"] == 1 && !json_response["data"][0].nil?) then
       return json_response["data"][0]["balance"]
     else
       raise("error in ethereum balance request")
