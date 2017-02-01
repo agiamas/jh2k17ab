@@ -1,3 +1,5 @@
+### DEPRECATED
+
 require "rubygems"
 require "sequel"
 

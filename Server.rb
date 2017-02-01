@@ -1,7 +1,7 @@
 require "roda"
 require_relative "lib/helpers"
 
-# HTTP requests for ethereum balance
+# HTTPS requests for ethereum balance
 require "net/https"
 require "uri"
 
@@ -10,15 +10,19 @@ require "sequel"
 
 
 class Server < Roda
+  # our sqlite db file
   DB_FILE = "db/sqlite3.db"
-  def initialize(input)
-    p input
-    super(input)
-    @DB = Sequel.sqlite(DB_FILE)
-  end
+  WEIS_TO_ETH = 1000000000000000000
+  @@DB = Sequel.sqlite(DB_FILE)
+  # initialize roda server to keep our instance variable
+  # def initialize(input)
+  #   super(input)
+  #
+  # end
 
   route do |r|
 
+    # hello world in / endpoint
     r.root do
       "Hello AB eth app!"
     end
@@ -26,8 +30,8 @@ class Server < Roda
     # GET /balance
     r.get "balance" do
       result = []
-      @DB[:accounts].each {|row|
-         row[:ether_balance] = (row[:balance].to_f/1000000000000000000)
+      @@DB[:accounts].each {|row|
+         row[:ether_balance] = (row[:balance].to_f/WEIS_TO_ETH)
          result << row
       }
       "#{result}"
@@ -77,10 +81,17 @@ class Server < Roda
 
   end
 
+
   # create a new account in the DB with ethereum address and balance in Weis
+  # since our eth_address is unique in our DB, trying to POST the same address will actually update the existing value
   def create_account(eth_address, balance)
-    accounts = @DB[:accounts]
-    accounts.insert(:eth_address => eth_address, :balance => balance)
+    accounts = @@DB[:accounts]
+    unique_account = accounts.where(:eth_address => eth_address)
+    if(unique_account.count > 0) then
+      unique_account.update(:balance => balance)
+    else
+      accounts.insert(:eth_address => eth_address, :balance => balance)
+    end
   end
 
 end
