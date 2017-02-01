@@ -1,12 +1,14 @@
 source 'http://rubygems.org'
 
+gem 'roda'
+gem 'sequel'
+gem 'sqlite3'
 
-group :development, :test do
-  gem "rspec"
+
+group :test do
+  gem 'rspec-roda'
+  gem 'byebug'
 end
 
 
 
-gem 'roda'
-gem 'sequel'
-gem 'sqlite3'

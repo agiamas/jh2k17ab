@@ -1,3 +1,3 @@
 require "./Server"
 
-run Server
+run Server.freeze.app
