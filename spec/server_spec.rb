@@ -1,21 +1,20 @@
-require 'spec_helper'
-require_relative 'Server'
+require 'Server'
 
 describe Server do
-
-  before(:all) do
-    @server = Server.new(Roda)
-  end
-
   describe "Test GET endpoint" do
-    it 'returns valid' do
-       @server.
+    it 'returns void' do
+      get '/balance'
+
+      json = JSON.parse(response.body)
+      expect(response).to be_success
     end
   end
 
   describe "Test POST endpoint" do
-    it "should deploy a contract with parameters" do
-
+    it "posts once" do
+      post '/add_balance?address=0x5f862a4adfc4ef14e6c6ee1acaf4838e2a0d34ad'
+      json = JSON.parse(response.body)
+      expect(response).to be_success
     end
 
   end
